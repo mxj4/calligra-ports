@@ -1,0 +1,19 @@
+--- a/kparts/genericfactory.h
++++ b/kparts/genericfactory.h
+@@ -25,6 +25,8 @@
+ #include <kaboutdata.h>
+ #include <kdebug.h>
+ 
++#ifndef KDE_NO_DEPRECATED
++
+ namespace KParts
+ {
+ 
+@@ -209,6 +211,7 @@ namespace KParts
+ }
+ 
+ #endif
++#endif
+ 
+ /**
+  * vim: et sw=4

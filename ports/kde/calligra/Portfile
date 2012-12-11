@@ -1,0 +1,82 @@
+# $Id$
+
+PortSystem          1.0
+PortGroup           kde4    1.1
+
+name                calligra
+version             2.6.0
+revision            0
+categories          kde kde4
+maintainers         yue
+license		    LGPL-2+
+description         The KDE Office suite. Calligra Suite is built on the KDE4 platform
+long_description    ${description}
+platforms           darwin
+homepage            http://www.calligra.org
+distname            calligra-${version}
+master_sites        kde:stable/${distname}/
+use_bzip2           yes
+depends_build       port:cmake \
+                    port:pkgconfig \
+                    port:gmake \
+                    port:docbook-xsl-ns \
+                    port:automoc \
+
+depends_lib	    port:kdelibs4 \
+                    port:kde4-runtime \
+                    port:sqlite3 \
+                    port:eigen \
+                    port:boost \
+                    port:qimageblitz \
+                    port:icu \
+                    port:fftw-3 \
+                    port:qrencode \
+                    port:libdmtx \
+                    port:gsl \
+                    port:glew \
+                    port:lcms2 \
+                    port:openexr \
+                    port:exiv2 \
+                    port:libgsf \
+		    port:libwpd \
+		    port:libwps \
+		    port:libwpg \
+		    port:libvisio \
+		    port:pstoedit \
+                    port:libkdcraw \
+                    port:poppler
+                    #port:opengtl port:qtgtl port:ocio # poppler should +qt4
+
+
+checksums           sha256 f31b0b9de299275ded02a47debfc737d01d9a4029aa7f21b4dfcc90742700e71
+
+configure.args-append	-DBUILD_active=0 -DWITH_Marble=0 -DWITH_KDeclarative=0 -DWITH_KdepimLibs=0 -DBUILD_mysql=0 -DWITH_Okular=0 \
+			../${distname}
+
+variant kdepimlibs description {Build kdepimlibs support} {
+	depends_lib-append	port:kdepimlibs4
+	configure.args-delete	-DWITH_KdepimLibs=0
+	configure.args-append	-DWITH_KdepimLibs=1
+}
+
+variant marble description {Build with marble map widget} {
+        depends_lib-append      port:marble
+        configure.args-delete   -DWITH_Marble=0
+        configure.args-append   -DWITH_Marble=1
+}
+
+variant okular description {Build with okular plugin} {
+        depends_lib-append      port:okular
+        configure.args-delete   -DWITH_Okular=0
+        configure.args-append   -DWITH_Okular=1
+}
+
+variant sql_drivers description {Build with extra Kexi sql driver} {
+        depends_lib-append      port:mysql55 \
+				port:libpqxx \
+				port:freetds \
+				port:xbase
+        configure.args-delete   -DBUILD_mysql=0
+        configure.args-append   -DBUILD_mysql=1
+}
+

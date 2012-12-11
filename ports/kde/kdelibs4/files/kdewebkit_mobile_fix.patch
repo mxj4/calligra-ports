@@ -1,0 +1,20 @@
+--- a/kdewebkit/kgraphicswebview.h
++++ b/kdewebkit/kgraphicswebview.h
+@@ -27,6 +27,7 @@
+ #define KGRAPHICSWEBVIEW_H
+ 
+ #include <kdewebkit_export.h>
++#include <kdemacros.h>
+ 
+ #include <QtWebKit/QGraphicsWebView>
+ 
+--- a/kdewebkit/kwebview.h
++++ b/kdewebkit/kwebview.h
+@@ -27,6 +27,7 @@
+ #define KWEBVIEW_H
+ 
+ #include <kdewebkit_export.h>
++#include <kdemacros.h>
+ 
+ #include <QtWebKit/QWebView>
+ 

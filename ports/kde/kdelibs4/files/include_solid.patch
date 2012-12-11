@@ -1,0 +1,9 @@
+--- a/kio/misc/kpac/CMakeLists.txt
++++ b/kio/misc/kpac/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ 
+-include_directories( ${CMAKE_SOURCE_DIR}/kded )
++include_directories( ${CMAKE_SOURCE_DIR}/kded ${CMAKE_SOURCE_DIR}/solid ${CMAKE_BINARY_DIR}/solid/ )
+ 
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+ 
