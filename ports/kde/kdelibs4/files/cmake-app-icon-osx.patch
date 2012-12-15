@@ -1,0 +1,131 @@
+--- kdelibs-4.9.3/cmake/modules/KDE4Macros.cmake.orig	2012-08-13 04:42:27.000000000 -0400
++++ kdelibs-4.9.3/cmake/modules/KDE4Macros.cmake	2012-12-14 22:18:37.000000000 -0500
+@@ -1201,27 +1201,91 @@
+         endif(PNG2ICO_EXECUTABLE)
+     endif(WIN32)
+     if (Q_WS_MAC)
+-        # first convert image to a tiff using the Mac OS X "sips" utility,
+-        # then use tiff2icns to convert to an icon
+-        find_program(SIPS_EXECUTABLE NAMES sips)
+-        find_program(TIFF2ICNS_EXECUTABLE NAMES tiff2icns)
+-        if (SIPS_EXECUTABLE AND TIFF2ICNS_EXECUTABLE)
+-            file(GLOB_RECURSE files  "${pattern}")
+-            # we can only test for the 128-icon like that - we don't use patterns anymore
++        # first generate .iconset directory structure, then convert to .icns format using the Mac OS X "iconutil" utility,
++        # to create retina compatible icon, you need png source files in pixel resolution 16x16, 32x32, 64x64, 128x128,
++	# 256x256, 512x512, 1024x1024
++	find_program(ICONUTIL_EXECUTABLE NAMES iconutil)
++	if (ICONUTIL_EXECUTABLE)
++	    file(GLOB_RECURSE files  "${pattern}")
++	    add_custom_command(OUTPUT ${_outfilename}.iconset
++		    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/${_outfilename}.iconset
++			       DEPENDS ${files}
++                               )
+             foreach (it ${files})
+-                if (it MATCHES ".*128.*" )
+-                    set (_icon ${it})
+-                endif (it MATCHES ".*128.*")
++                if (it MATCHES ".*16-app.*" )
++			add_custom_command(
++				OUTPUT icon_16x16.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_16x16.png
++				DEPENDS ${it}
++				)
++                endif (it MATCHES ".*16-app.*")
++		if (it MATCHES ".*32-app.*" )
++			add_custom_command(
++				OUTPUT icon_16x16@2x.png icon_32x32.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_16x16@2x.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_32x32.png
++				DEPENDS ${it}
++				)
++                endif (it MATCHES ".*32-app.*")
++		if (it MATCHES ".*64-app.*" )
++			add_custom_command(
++				OUTPUT icon_32x32@2x.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_32x32@2x.png
++				DEPENDS ${it}
++				)
++                endif (it MATCHES ".*64-app.*")
++		if (it MATCHES ".*128-app.*" )
++			add_custom_command(
++				OUTPUT icon_128x128.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_128x128.png
++				DEPENDS ${it}
++				)
++                endif (it MATCHES ".*128-app.*")
++		if (it MATCHES ".*256-app.*" )
++			add_custom_command(
++				OUTPUT icon_128x128@2x.png icon_256x256.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_128x128@2x.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_256x256.png
++				DEPENDS ${it}
++				)
++                endif (it MATCHES ".*256-app.*")
++		if (it MATCHES ".*512-app.*" )
++			add_custom_command(
++				OUTPUT icon_256x256@2x.png icon_512x512.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_256x256@2x.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_512x512.png
++				DEPENDS ${it}
++				)
++                endif (it MATCHES ".*512-app.*")
++		if (it MATCHES ".*1024-app.*" )
++			add_custom_command(
++				OUTPUT icon_512x512@2x.png
++				COMMAND ${CMAKE_COMMAND} -E copy ${it}
++					${CMAKE_CURRENT_BINARY_DIR}/${outfilename}.iconset/icon_512x512@2x.png
++				DEPENDS ${it}
++				)
++		else (it  MATCHES ".*1024-app.*")
++			message(STATUS "Unable to find an 1024x1024 icon that matches pattern ${pattern} for variable ${appsources} - application icon won't support Retina display!")
++                endif (it MATCHES ".*1024-app.*")		
+             endforeach (it)
+ 
+-            if (_icon)
++            if (files)
+                 
+-                # first, get the basename of our app icon
+-                add_custom_command(OUTPUT ${_outfilename}.icns ${outfilename}.tiff
+-                                   COMMAND ${SIPS_EXECUTABLE} -s format tiff ${_icon} --out ${outfilename}.tiff
+-                                   COMMAND ${TIFF2ICNS_EXECUTABLE} ${outfilename}.tiff ${_outfilename}.icns
+-                                   DEPENDS ${_icon}
+-                                   )
++                # generate .icns icon file
++                add_custom_command(
++			OUTPUT ${_outfilename}.icns
++			COMMAND ${ICONUTIL_EXECUTABLE} --convert icns --output ${outfilename}.icons ${_outfilename}.iconset
++                        DEPENDS ${_outfilename}.iconset
++                        )
+ 
+                 # This will register the icon into the bundle
+                 set(MACOSX_BUNDLE_ICON_FILE ${appsources}.icns)
+@@ -1233,14 +1297,13 @@
+                 # Install the icon into the Resources dir in the bundle
+                 set_source_files_properties(${_outfilename}.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+ 
+-            else(_icon)
+-                # TODO - try to scale a non-128 icon...? Try to convert an SVG on the fly?
+-                message(STATUS "Unable to find an 128x128 icon that matches pattern ${pattern} for variable ${appsources} - application will not have an application icon!")
++            else(files)
++    		    message(STATUS "Unable to find an icon that matches pattern ${pattern} for variable ${appsources} - application will not have an application icon!")
+             endif(_icon)
+ 
+-        else(SIPS_EXECUTABLE AND TIFF2ICNS_EXECUTABLE)
+-            message(STATUS "Unable to find the sips and tiff2icns utilities - application will not have an application icon!")
+-        endif(SIPS_EXECUTABLE AND TIFF2ICNS_EXECUTABLE)
++    	else(ICONUTIL_EXECUTABLE)
++            message(STATUS "Unable to find the iconutil utility - application will not have an application icon!")
++    	endif(ICONUTIL_EXECUTABLE)
+     endif(Q_WS_MAC)
+ endmacro (KDE4_ADD_APP_ICON)
+ 

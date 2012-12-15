@@ -51,7 +51,8 @@ patchfiles          add-bundles-to-path.patch \
                     workaround-kdeinit4-crash.patch \
                     patch-cmake-modules-FindKDE4-Internal.cmake.diff \
                     patch-cmake-modules-FindPhonon.cmake.diff \
-                    patch-cmake-modules-FindQt4.cmake.diff
+                    patch-cmake-modules-FindQt4.cmake.diff \
+                    cmake-app-icon-osx.patch
 
 patch.pre_args      -p1
 
