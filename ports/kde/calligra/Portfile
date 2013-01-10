@@ -30,25 +30,22 @@ depends_lib	    port:kdelibs4 \
                     port:qimageblitz \
                     port:icu \
                     port:fftw-3 \
-                    port:qrencode \
-                    port:libdmtx \
                     port:gsl \
                     port:glew \
                     port:lcms2 \
                     port:openexr \
                     port:exiv2 \
-                    port:libgsf \
 		    port:libwpd \
 		    port:libwps \
 		    port:libwpg \
 		    port:libvisio \
-		    port:pstoedit \
+                    port:pstoedit \
                     port:libkdcraw \
                     port:poppler
                     #port:opengtl port:qtgtl port:ocio # poppler should +qt4
 
 
-checksums           sha256 f31b0b9de299275ded02a47debfc737d01d9a4029aa7f21b4dfcc90742700e71
+checksums           sha256 08d1a3e06ec5fbf4cd8a70a30f5c69733b7ee4bde8ce0a7f443991ef25ec873c
 
 configure.args-append	-DBUILD_active=0 -DWITH_Marble=0 -DWITH_KDeclarative=0 -DWITH_KdepimLibs=0 -DBUILD_mysql=0 -DWITH_Okular=0 \
 			../${distname}

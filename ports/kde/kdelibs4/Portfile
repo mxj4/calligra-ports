@@ -5,10 +5,10 @@ PortSystem          1.0
 PortGroup           kde4   1.1
 
 name                kdelibs4
-version             4.9.3
+version             4.9.5
 categories          kde kde4
 maintainers         sharky nicos
-license             GPL-2+
+license             LGPL-2+ GPL-2+ BSD
 description         KDE4 core libraries
 long_description    Core libraries for KDE4 applications to function
 platforms           darwin
@@ -17,8 +17,8 @@ master_sites        kde:stable/${version}/src/
 use_xz              yes
 distname            kdelibs-${version}
 
-checksums           rmd160  2d2951be36203ef42fa186e1fe142aa100d6434a \
-                    sha256  73b1bbda87a5f9c3bf3ca566b820c982b9bf78a9c02b9b8104bb68e7f4b59393
+checksums           rmd160  c7f76deb006f18e498bf12b44fc5520ccc3867ee \
+                    sha256  fc977af4efe00e6cab1051dc7b2424b1a8aa434536c5a5f8f1f54417519b3427
 
 depends_build-append port:flex port:gmake port:docbook-xsl-ns
 
@@ -51,8 +51,7 @@ patchfiles          add-bundles-to-path.patch \
                     workaround-kdeinit4-crash.patch \
                     patch-cmake-modules-FindKDE4-Internal.cmake.diff \
                     patch-cmake-modules-FindPhonon.cmake.diff \
-                    patch-cmake-modules-FindQt4.cmake.diff \
-                    cmake-app-icon-osx.patch
+                    patch-cmake-modules-FindQt4.cmake.diff
 
 patch.pre_args      -p1
 
@@ -64,7 +63,7 @@ configure.args-append   -DWITH_ENCHANT=ON \
                         -DKDE_DEFAULT_HOME=Library/Preferences/KDE \
                         -DWITH_HSPELL=OFF \
                         -DWITH_FAM=OFF \
-                        -DKDE4_ENABLE_FINAL=ON
+                        -DKDE4_AUTH_BACKEND_NAME="OSX"
 
 if { [file exists ${destroot}${prefix}/lib/kde4/kspell_aspell.so] } {
     notes "
@@ -141,19 +140,20 @@ variant minimal description {KDE framework in mobile profile and reduced many st
     patchfiles-append \
         no-kparts-genericfactory.patch \
         kdewebkit_mobile_fix.patch \
-        include_solid.patch 
+        include_solid.patch \
+        kdelibs-strigi-optional.patch
 
     depends_lib-delete \
         port:cyrus-sasl2 port:kerberos5 \
         port:tiff port:jasper port:openexr \
         port:expat port:libart_lgpl \
         port:libidn port:libiconv \
-        port:soprano
+        port:soprano port:strigi
 
     configure.args-delete    -DWITH_SOPRANO=ON
     configure.args-append    -DKDE_PLATFORM_PROFILE=Mobile -DWITH_SOPRANO=OFF -DHAVE_NEPOMUK=OFF \
                              -DBUILD_doc=OFF -DWITH_GSSAPI=OFF 
 }
 
-livecheck.url       http://kde.mirrors.hoobly.com/stable/latest/src/
-livecheck.regex     kdelibs-(\\d+\\.\\d+\\.\\d+)
+livecheck.url       http://kde.mirrors.hoobly.com/stable/
+livecheck.regex     (\\d+(\\.\\d+)+)

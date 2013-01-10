@@ -94,10 +94,15 @@ if {${qt_dir} != ${prefix}} {
 }
 
 # standard configure args; virtually all KDE ports use CMake and Qt4.
+if {${name} == "calligra"} {
+    configure.args-append    -DBUNDLE_INSTALL_DIR=${applications_dir}
+} else {
+    configure.args-append    -DBUNDLE_INSTALL_DIR=${applications_dir}/Tools
+}
+
 configure.args-append   -DBUILD_doc=OFF \
                         -DBUILD_docs=OFF \
                         -DBUILD_SHARED_LIBS=ON \
-                        -DBUNDLE_INSTALL_DIR=${applications_dir}/KDE4 \
                         -DKDE_DISTRIBUTION_TEXT=\"MacPorts\/Mac OS X\" \
                         ${qt_cmake_defines}
 

@@ -1,10 +1,9 @@
 #!/bin/bash
 
-[[ -n "$1" ]] || { echo "Usage: build_pkg.sh port_name variants"; exit 0; }
+[[ -n "$2" ]] || { echo "Usage: build_pkg.sh port_name variants output_dir"; exit 0; }
 
-PORT_SRC=$HOME/Develop/mports/trunk/dports
 PREFIX=/opt/calligra
-OUTPUT_DIR=$HOME/$1_pkgs
+OUTPUT_DIR=${BASH_ARGV[0]}
 
 LIST=`port rdeps $@ | sed '1d' | sed 's/^[ ]*//g'`" $1"
 echo $LIST

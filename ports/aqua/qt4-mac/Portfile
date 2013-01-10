@@ -10,9 +10,12 @@ PortGroup           qt4 1.0
 PortGroup           xcodeversion 1.0
 
 name                qt4-mac
-conflicts           qt3 qt3-mac qt4-mac-devel
-version             4.8.3
-revision            1
+# qt4-mac-devel is "replaced_by" this port,
+# so this port cannot conflict with it.
+#conflicts           qt3 qt3-mac qt4-mac-devel
+conflicts           qt3 qt3-mac
+version             4.8.4
+revision            2
 categories          aqua
 platforms           macosx
 maintainers         michaelld openmaintainer
@@ -27,13 +30,13 @@ long_description    Qt Tool Kit: A cross-platform framework \
 master_sites        trolltech
 distname            qt-everywhere-opensource-src-${version}
 
-checksums           sha1    bc352a283610e0cd2fe0dbedbc45613844090fcb \
-                    rmd160  fe56e5da874503a79d6f84a1e15460eba5a6feae
+checksums           sha1    f5880f11c139d7d8d01ecb8d874535f7d9553198 \
+                    rmd160  3c09a3b1411385d0917225f01ac2ff3a2ce83fda
 
 minimum_xcodeversions   {8 2.5}
 
 depends_lib-append  port:zlib path:bin/dbus-daemon:dbus \
-                    port:openssl port:sqlite3 port:tiff \
+                    port:openssl port:tiff \
                     port:libpng port:libmng port:jpeg
 
 ###############################################
@@ -216,11 +219,6 @@ platform darwin 12 {
 patchfiles-append   \
     patch-tools_macdeployqt_shared_shared.cpp.diff
 
-# (25) temporary fix for Mac menu state; will be removed with 4.8.4.
-
-patchfiles-append   \
-    patch-4.8.4-osx-native-menu-state-fix.diff
-
 ###############################################
 
 # disable CCACHE for now (ticket #34856)
@@ -393,8 +391,6 @@ set header_path [ list ${prefix}/include/dbus-1.0 \
 
 set library_path [ list ${prefix}/lib ]
 
-# -system-sqlite ensures the use SQLite provided by MacPorts instead of Qt.
-#
 # -dbus-linked prevends qt4 from trying to dynamically load libdbus-1,
 #     which it is not able to find in ${prefix}.
 #
@@ -428,7 +424,6 @@ configure.args                                            \
     -sysconfdir      ${qt_sysconf_dir}                    \
     -examplesdir     ${qt_examples_dir}                   \
     -demosdir        ${qt_demos_dir}                      \
-    -system-sqlite                                        \
     -openssl-linked                                       \
     -dbus-linked                                          \
     -fast                                                 \
@@ -444,11 +439,10 @@ foreach driver {db2 ibase oci tds} {
     configure.args-append -no-sql-${driver}
 }
 
-# By default, disable most SQL Drivers.
-# There must be at least one enabled (http://trac.macports.org/ticket/15627).
-# SQLite is chosen to be always enabled because a copy of it is distributed
-#    with Qt, so it is reasonable for the user to expect it.
-foreach driver {mysql odbc psql sqlite2} {
+# Disable all remaining SQL Drivers.  These are available via the
+# ports qt4-mac-*-plugin.
+
+foreach driver {mysql odbc psql sqlite sqlite2} {
     configure.args-append -no-sql-${driver}
 }
 
@@ -466,7 +460,7 @@ pre-configure {
         # required linking flags?
 
         configure.ldflags-append -lcrypto -ldbus-1 -ljpeg -llcms \
-            -lsqlite3 -lssl -lz
+            -lssl -lz
 
     } elseif {${MINOR} == "5" &&
               [llength ${qt_arch_types}] == 1 &&
@@ -508,6 +502,11 @@ pre-configure {
     if {[file exists ${SDK}]} {
         configure.args-append -sdk ${SDK}
     }
+
+    # set which pkg-config to use
+
+    configure.env-append PKG_CONFIG=${prefix}/bin/pkg-config
+
 }
 
 post-configure {
@@ -842,11 +841,29 @@ post-destroot {
         eval xinstall -m 644 [split ${files}] ${dest_dir}
     }
 
-    # Move .apps into the applications_dir
+    # Move .apps into the applications_dir, and link each .apps'
+    # executable back into ${qt_bins_dir}
 
-    xinstall -m 755 -d ${destroot}${qt_apps_dir}
-    foreach app [glob ${destroot}/${qt_bins_dir}/*.app] {
-        move ${app} ${destroot}${qt_apps_dir}
+    set dr_qt_apps_dir ${destroot}${qt_apps_dir}
+    set dr_qt_bins_dir ${destroot}${qt_bins_dir}
+
+    xinstall -m 755 -d ${dr_qt_apps_dir}
+    foreach app [glob ${dr_qt_bins_dir}/*.app] {
+
+        # remove the leading stuff
+
+        set app [lindex [split ${app} /] end]
+
+        # move the .app
+
+        move ${dr_qt_bins_dir}/${app} ${dr_qt_apps_dir}
+
+        # link the app's executable back
+
+        set texe [strsed ${app} {g@\.app@@}]
+        ln -s ${qt_apps_dir}/${app}/Contents/MacOS/${texe} \
+            ${dr_qt_bins_dir}
+
     }
 
     # move tests to ${qt_data_dir}
@@ -854,6 +871,17 @@ post-destroot {
     xinstall -m 755 -d ${destroot}${qt_data_dir}
     move ${destroot_qt}/tests/qt4 ${destroot}${qt_data_dir}/tests
 
+    # install ${qt_includes_dir}/Qt if not already and it exists in
+    # the build, for support of legacy projects
+
+    if {![file exists ${destroot}${qt_includes_dir}/Qt] &&
+        [file exists ${worksrcpath}/include/Qt]} {
+
+        # copy the Qt headers directory
+
+        copy ${worksrcpath}/include/Qt ${destroot}${qt_includes_dir}
+
+    }
 }
 
 pre-activate {
@@ -910,11 +938,6 @@ if {${psql_version} != ""} {
     return -code error "Variant disabled"
 }
 
-variant sqlite2 description {SQLite version 2 SQL Plugin Legacy Compatibility Variant} {
-    ui_error "${name} variant +sqlite2 has been replaced by the port 'qt4-mac-sqlite2-plugin'.  Please install ${name} without +sqlite2, then install this new SQLite version 2 Qt plugin port."
-    return -code error "Variant disabled"
-}
-
 variant raster description {Use raster graphics system by default} {
     configure.args-append -graphicssystem raster
 }
@@ -937,6 +960,34 @@ if {[variant_isset debug]} {
     configure.args-append -debug-and-release -declarative-debug
 } else {
     configure.args-append -release -no-declarative-debug
+}
+
+variant openvg description {Build with support for OpenVG} {
+
+    depends_lib-append port:mesa
+
+    post-patch {
+
+        # fix variable name in 'configure' for OpenVG
+
+        reinplace "s@CONFIG_ARG@QMAKE_OPENVG_ARG@g" \
+            ${worksrcpath}/configure
+
+        # allow us to set the QMAKE_SWITCHES
+
+        reinplace "s@QMAKE_SWITCHES=@@g" \
+            ${worksrcpath}/configure
+
+    }
+
+    pre-configure {
+
+        # set OpenVG arg, for both testing and building
+
+        configure.env-append \
+            QMAKE_OPENVG_ARG=-lOpenVG \
+            QMAKE_SWITCHES=\"QMAKE_LIBS_OPENVG=-lOpenVG\"
+    }
 }
 
 #variant quartz conflicts x11

@@ -21,8 +21,7 @@ master_sites    http://dbus.freedesktop.org/releases/dbus-glib
 checksums           rmd160  01f474d021fb2a3c8eec86f590a5cd5a0ef3bf82 \
                     sha256  80ddf7584a659590103817798dd95d7e451d666f385e5e95a83abf85c46d4605
 
-depends_build   port:pkgconfig \
-                port:gtk-doc
+depends_build   port:pkgconfig
 
 depends_lib     port:expat \
                 port:libiconv \

@@ -3,7 +3,7 @@
 PortSystem 1.0
 
 name                automake
-version             1.12.5
+version             1.13.1
 categories          devel
 license             {GPL-2+ Permissive}
 installs_libs       no
@@ -20,8 +20,8 @@ long_description    Automake is a tool for automatically generating \
 
 homepage            http://www.gnu.org/software/automake/
 master_sites        gnu
-checksums           rmd160  9d31e1613031094e3b73a72ffc60d8064ddc10e5 \
-                    sha256  82089e23b384d3e64efa4f09f133a02dadb91c0593d4f1d4e12c29d806be9925
+checksums           rmd160  317a22cdef3f4353b29afc6797cda0698fae41dc \
+                    sha256  51bc10031847e9965c4f2c16a0a66552309ce28ea82b1afa8cef736643ebaa27
 
 depends_build       port:autoconf
 depends_lib         path:bin/perl:perl5

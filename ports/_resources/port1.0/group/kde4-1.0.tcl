@@ -75,7 +75,7 @@ switch ${os.platform}_${os.major} {
 
 configure.args-append   -DBUILD_doc=OFF \
                         -DBUILD_SHARED_LIBS=ON \
-                        -DBUNDLE_INSTALL_DIR=${applications_dir}/KDE4 \
+                        -DBUNDLE_INSTALL_DIR=${applications_dir}/Tools \
                         -DPHONON_INCLUDE_DIR=${qt_dir}/include \
                         -DPHONON_LIBRARY=${qt_dir}/lib/phonon.framework/phonon \
                         -DQT_QMAKE_EXECUTABLE=${qt_dir}/bin/qmake \

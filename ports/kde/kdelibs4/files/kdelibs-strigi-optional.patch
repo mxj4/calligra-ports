@@ -1,0 +1,120 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5df26e5..02d07db 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -72,13 +72,13 @@ macro_log_feature(ZLIB_FOUND "ZLib" "Support for gzip compressed files and data
+ 
+ set(STRIGI_MIN_VERSION 0.6.3)
+ find_package(Strigi)
+-if (WIN32)
++if (WIN32 OR APPLE)
+     set (STRIGI_REQUIRED FALSE)
+     set (STRIGI_EXTRA_TEXT "")
+-else (WIN32)
++else (WIN32 OR APPLE)
+     set (STRIGI_REQUIRED TRUE)
+     set (STRIGI_EXTRA_TEXT "Required by some critical kioslaves")
+-endif (WIN32)
++endif (WIN32 OR APPLE)
+ macro_log_feature(STRIGI_FOUND "Strigi" "Desktop indexing and search support" "http://strigi.sourceforge.net" ${STRIGI_REQUIRED} "${STRIGI_MIN_VERSION}" "${STRIGI_EXTRA_TEXT}")
+ 
+ set(LIBATTICA_MIN_VERSION "0.1.90")
+diff --git a/kde3support/CMakeLists.txt b/kde3support/CMakeLists.txt
+index 2e91b73..98fa7da 100644
+--- a/kde3support/CMakeLists.txt
++++ b/kde3support/CMakeLists.txt
+@@ -5,6 +5,7 @@ kde4_no_enable_final(kde3support)
+ # inter-subdir dependencies
+ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/kdecore ${CMAKE_CURRENT_SOURCE_DIR}/kdeui
+ ${CMAKE_CURRENT_SOURCE_DIR}/kio/kfile
++${CMAKE_BINARY_DIR}/kio/kio
+ ${CMAKE_SOURCE_DIR}/solid )
+ #${CMAKE_CURRENT_SOURCE_DIR}/kparts ${CMAKE_CURRENT_SOURCE_DIR}/kutils )
+ 
+diff --git a/kdewidgets/CMakeLists.txt b/kdewidgets/CMakeLists.txt
+index 5153601..fa45793 100644
+--- a/kdewidgets/CMakeLists.txt
++++ b/kdewidgets/CMakeLists.txt
+@@ -6,6 +6,7 @@ add_subdirectory( tests )
+ 
+ include_directories(
+   ${KDE4_KIO_INCLUDES}
++  ${CMAKE_BINARY_DIR}/kio/kio
+  )
+ 
+ 
+diff --git a/kfile/CMakeLists.txt b/kfile/CMakeLists.txt
+index ceae140..a2fc2fe 100644
+--- a/kfile/CMakeLists.txt
++++ b/kfile/CMakeLists.txt
+@@ -2,6 +2,7 @@ project(kfile)
+ 
+ include_directories(
+   ${KDE4_KIO_INCLUDES}
++  ${CMAKE_BINARY_DIR}/kio/kio
+   ${CMAKE_SOURCE_DIR}/solid
+   ${CMAKE_BINARY_DIR}/solid
+ )
+diff --git a/khtml/CMakeLists.txt b/khtml/CMakeLists.txt
+index 99034cc..135c574 100644
+--- a/khtml/CMakeLists.txt
++++ b/khtml/CMakeLists.txt
+@@ -439,7 +439,7 @@ add_subdirectory( pics )
+ add_subdirectory( ecma )
+ 
+ include_directories( ${KDE4_PHONON_INCLUDES} ${KDE4_KPARTS_INCLUDES} )
+-include_directories( ${CMAKE_BINARY_DIR}/kio/kssl )
++include_directories( ${CMAKE_BINARY_DIR}/kio/kssl ${CMAKE_BINARY_DIR}/kio/kio)
+ include_directories( ${KDE4_KJS_INCLUDES} ${CMAKE_SOURCE_DIR}/kimgio ${CMAKE_SOURCE_DIR}/kio/kssl ${CMAKE_SOURCE_DIR}/interfaces ${CMAKE_SOURCE_DIR}/interfaces/kregexpeditor)
+ 
+ include_directories(
+diff --git a/kio/kio/kfilemetainfo.h b/kio/kio/kfilemetainfo.h
+index 6920ffe..574eaeb 100644
+--- a/kio/kio/kfilemetainfo.h
++++ b/kio/kio/kfilemetainfo.h
+@@ -23,6 +23,7 @@
+ 
+ #include "predicateproperties.h"
+ #include "kfilemetainfoitem.h"
++#include <config-kio.h>
+ #include <QtCore/QList>
+ #include <QtCore/QStringList>
+ class KUrl;
+@@ -117,7 +118,11 @@ public:
+     /**
+      * @brief Copy a KFileMetaInfo instance from another one.
+      **/
++#ifndef KIO_NO_STRIGI
+     KFileMetaInfo& operator=(KFileMetaInfo const& kfmi);
++#else
++    const KFileMetaInfo& operator=(KFileMetaInfo const& kfmi);
++#endif
+     /**
+      * @brief Save the changes made to this KFileMetaInfo instance.
+      */
+diff --git a/kioslave/metainfo/CMakeLists.txt b/kioslave/metainfo/CMakeLists.txt
+index cbf2d86..ea3d5e8 100644
+--- a/kioslave/metainfo/CMakeLists.txt
++++ b/kioslave/metainfo/CMakeLists.txt
+@@ -1,7 +1,7 @@
+ 
+ project(kioslave-metainfo)
+ 
+-include_directories( ${KDE4_KIO_INCLUDES} )
++include_directories( ${KDE4_KIO_INCLUDES} ${CMAKE_BINARY_DIR}/kio/kio)
+ 
+ 
+ ########### next target ###############
+diff --git a/kparts/CMakeLists.txt b/kparts/CMakeLists.txt
+index 2eab2e8..45e3d1e 100644
+--- a/kparts/CMakeLists.txt
++++ b/kparts/CMakeLists.txt
+@@ -2,7 +2,7 @@ project(kparts)
+ 
+ add_subdirectory( tests )
+ 
+-include_directories(${KDE4_KIO_INCLUDES} ${kparts_BINARY_DIR})
++include_directories(${KDE4_KIO_INCLUDES} ${kparts_BINARY_DIR} ${kio_BINARY_DIR}/kio)
+ if(HAVE_NEPOMUK)
+     include_directories(${nepomuk_SOURCE_DIR} ${nepomuk_SOURCE_DIR}/core ${nepomuk_SOURCE_DIR}/types)
+ endif(HAVE_NEPOMUK)

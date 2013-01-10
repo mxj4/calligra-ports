@@ -23,7 +23,6 @@ checksums       rmd160  e1eb619bba1e263464fb334a6cb952d45329ae65 \
 depends_build   port:pkgconfig
 
 depends_lib     path:lib/pkgconfig/glib-2.0.pc:glib2 \
-                port:libgsf \
                 port:libxml2
 
 patch {

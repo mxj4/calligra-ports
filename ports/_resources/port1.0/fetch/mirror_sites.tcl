@@ -130,7 +130,6 @@ set portfetch::mirror_sites::sites(gentoo) {
     http://ftp.rhnet.is/pub/gentoo/distfiles/:nosubdir
     http://ftp.heanet.ie/pub/gentoo/distfiles/:nosubdir
     http://gentoo.tups.lv/source/distfiles/:nosubdir
-    http://mirror.elen.ktu.lt/gentoo/distfiles/:nosubdir
     http://mirror.cambrium.nl/pub/os/linux/gentoo/distfiles/:nosubdir
     http://gentoo.tiscali.nl/distfiles/:nosubdir
     http://mirror.gentoo.no/distfiles/:nosubdir
@@ -423,7 +422,6 @@ set portfetch::mirror_sites::sites(sourceforge) {
     http://jaist.dl.sourceforge.net/
     http://nchc.dl.sourceforge.net/
     http://netcologne.dl.sourceforge.net/
-    http://space.dl.sourceforge.net/
     http://superb-dca2.dl.sourceforge.net/
     http://superb-dca3.dl.sourceforge.net/
     http://switch.dl.sourceforge.net/

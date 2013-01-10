@@ -93,7 +93,7 @@ set qt_bins_dir         ${qt_dir}/bin
 
 # standard Qt .app executables directory, if created
 global qt_apps_dir
-set qt_apps_dir         ${applications_dir}/Qt4
+set qt_apps_dir         ${applications_dir}
 
 # standard Qt data directory
 global qt_data_dir
