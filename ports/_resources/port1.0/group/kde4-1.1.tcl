@@ -94,8 +94,10 @@ if {${qt_dir} != ${prefix}} {
 }
 
 # standard configure args; virtually all KDE ports use CMake and Qt4.
-if {${name} == "calligra"} {
-    configure.args-append    -DBUNDLE_INSTALL_DIR=${applications_dir}
+if { [info exists name] } {
+    if {${name} == "calligra"} {
+        configure.args-append    -DBUNDLE_INSTALL_DIR=${applications_dir}
+    }
 } else {
     configure.args-append    -DBUNDLE_INSTALL_DIR=${applications_dir}/Tools
 }

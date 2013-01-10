@@ -1,9 +1,11 @@
 # $Id$
 
 PortSystem          1.0
-PortGroup           kde4    1.1
 
 name                calligra
+
+PortGroup           kde4    1.1
+
 version             2.6.0
 revision            0
 categories          kde kde4

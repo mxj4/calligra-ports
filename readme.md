@@ -1,7 +1,7 @@
 MacPorts Fork for Building Calligra Suite Installer on Mac OS X
 ===============================================================
 
-Repo structure
+Repo Structure
 --------------
 
 * ports dir contains the forked ports
