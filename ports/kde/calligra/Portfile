@@ -1,12 +1,10 @@
 # $Id$
 
 PortSystem          1.0
-
-name                calligra
-
 PortGroup           kde4    1.1
 
-version             2.6.0
+name                calligra
+version             2.5.94
 revision            0
 categories          kde kde4
 maintainers         yue
@@ -16,7 +14,7 @@ long_description    ${description}
 platforms           darwin
 homepage            http://www.calligra.org
 distname            calligra-${version}
-master_sites        kde:stable/${distname}/
+master_sites        kde:unstable/${distname}/
 use_bzip2           yes
 depends_build       port:cmake \
                     port:pkgconfig \
@@ -47,7 +45,7 @@ depends_lib	    port:kdelibs4 \
                     #port:opengtl port:qtgtl port:ocio # poppler should +qt4
 
 
-checksums           sha256 08d1a3e06ec5fbf4cd8a70a30f5c69733b7ee4bde8ce0a7f443991ef25ec873c
+checksums           sha256 3b405d74046bee4446e4a7a311a27c5986458f557e05d14b9c49855cc0a9de7e
 
 configure.args-append	-DBUILD_active=0 -DWITH_Marble=0 -DWITH_KDeclarative=0 -DWITH_KdepimLibs=0 -DBUILD_mysql=0 -DWITH_Okular=0 \
 			../${distname}
@@ -79,3 +77,25 @@ variant sql_drivers description {Build with extra Kexi sql driver} {
         configure.args-append   -DBUILD_mysql=1
 }
 
+post-destroot {
+        file rename ${destroot}${applications_dir}/Tools/calligrawords.app \
+            ${destroot}${applications_dir}/calligrawords.app
+        file rename ${destroot}${applications_dir}/Tools/calligrastage.app \
+            ${destroot}${applications_dir}/calligrastage.app
+        file rename ${destroot}${applications_dir}/Tools/calligrasheets.app \
+            ${destroot}${applications_dir}/calligrasheets.app
+        file rename ${destroot}${applications_dir}/Tools/calligraflow.app \
+            ${destroot}${applications_dir}/calligraflow.app
+        file rename ${destroot}${applications_dir}/Tools/karbon.app \
+            ${destroot}${applications_dir}/karbon.app
+        file rename ${destroot}${applications_dir}/Tools/krita.app \
+            ${destroot}${applications_dir}/krita.app
+        file rename ${destroot}${applications_dir}/Tools/calligraplan.app \
+            ${destroot}${applications_dir}/calligraplan.app
+        file rename ${destroot}${applications_dir}/Tools/braindump.app \
+            ${destroot}${applications_dir}/braindump.app
+        file rename ${destroot}${applications_dir}/Tools/calligraauthor.app \
+            ${destroot}${applications_dir}/calligraauthor.app
+        file rename ${destroot}${applications_dir}/Tools/kexi.app \
+            ${destroot}${applications_dir}/kexi.app
+}

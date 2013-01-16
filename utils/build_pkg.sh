@@ -19,3 +19,11 @@ echo "All components built."
 
 find $PREFIX/var/macports/build -name '*-component.pkg' -exec mv '{}' $OUTPUT_DIR/ \;
 echo "All component pkgs moved to $OUTPUTDIR."
+
+#BUILD_DEPS=`port echo leaves | awk '{print $1}'`
+#for dep in $BUILD_DEPS
+#do
+#    find $OUTPUT_DIR/ -name '${dep}*' -exec rm '{}' \;
+#done
+#echo "Build deps removed."
+

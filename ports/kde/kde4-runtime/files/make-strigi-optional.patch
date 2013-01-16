@@ -1,0 +1,11 @@
+--- kde-runtime-4.9.5/CMakeLists.txt.orig	2013-01-10 15:12:13.000000000 -0500
++++ kde-runtime-4.9.5/CMakeLists.txt	2013-01-10 15:07:59.000000000 -0500
+@@ -15,7 +15,7 @@
+ #search packages used by KDE
+ set(KDE_MIN_VERSION "4.7.97")  # for the < 4.2 macro
+ find_package(KDE4 4.8.0 REQUIRED)
+-if (WIN32)
++if (WIN32 OR APPLE)
+     find_package(Strigi)
+ else ()
+     find_package(Strigi REQUIRED)
