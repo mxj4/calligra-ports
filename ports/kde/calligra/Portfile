@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           kde4    1.1
 
 name                calligra
-version             2.5.94
+version             2.6.0
 revision            0
 categories          kde kde4
 maintainers         yue
@@ -14,7 +14,7 @@ long_description    ${description}
 platforms           darwin
 homepage            http://www.calligra.org
 distname            calligra-${version}
-master_sites        kde:unstable/${distname}/
+master_sites        kde:stable/${distname}/
 use_bzip2           yes
 depends_build       port:cmake \
                     port:pkgconfig \
@@ -23,7 +23,6 @@ depends_build       port:cmake \
                     port:automoc \
 
 depends_lib	    port:kdelibs4 \
-                    port:kde4-runtime \
                     port:sqlite3 \
                     port:eigen \
                     port:boost \
@@ -45,7 +44,7 @@ depends_lib	    port:kdelibs4 \
                     #port:opengtl port:qtgtl port:ocio # poppler should +qt4
 
 
-checksums           sha256 3b405d74046bee4446e4a7a311a27c5986458f557e05d14b9c49855cc0a9de7e
+checksums           sha256 77e1257588856bf4b3924672c847c3c766e8d8819c23017ea24e141e4e9051cf
 
 configure.args-append	-DBUILD_active=0 -DWITH_Marble=0 -DWITH_KDeclarative=0 -DWITH_KdepimLibs=0 -DBUILD_mysql=0 -DWITH_Okular=0 \
 			../${distname}
