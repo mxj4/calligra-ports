@@ -21,11 +21,11 @@ depends_build       port:cmake \
                     port:gmake \
                     port:docbook-xsl-ns \
                     port:automoc \
+                    port:boost
 
 depends_lib	    port:kdelibs4 \
                     port:sqlite3 \
                     port:eigen \
-                    port:boost \
                     port:qimageblitz \
                     port:icu \
                     port:fftw-3 \
