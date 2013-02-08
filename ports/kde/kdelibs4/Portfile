@@ -141,7 +141,8 @@ variant minimal description {KDE framework in mobile profile and reduced many st
         no-kparts-genericfactory.patch \
         kdewebkit_mobile_fix.patch \
         include_solid.patch \
-        kdelibs-strigi-optional.patch
+        kdelibs-strigi-optional.patch \
+        strip-more.patch
 
     depends_lib-delete \
         port:cyrus-sasl2 port:kerberos5 \

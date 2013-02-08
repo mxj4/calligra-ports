@@ -488,9 +488,8 @@ configure.args                                            \
     -framework                                            \
     -no-phonon                                            \
     -no-phonon-backend                                    \
-    -no-webkit                                            \
     -no-declarative                                       \
-    -nomake tools -nomake docs -nomake translations
+    -nomake docs -nomake translations 
 
 # Stop configure script from searching for SQL Drivers
 #    not available from MacPorts.
@@ -931,8 +930,8 @@ post-destroot {
 
     # move tests to ${qt_data_dir}
 
-    #xinstall -m 755 -d ${destroot}${qt_data_dir}
-    #move ${destroot_qt}/tests/qt4 ${destroot}${qt_data_dir}/tests
+    xinstall -m 755 -d ${destroot}${qt_data_dir}
+    move ${destroot_qt}/tests/qt4 ${destroot}${qt_data_dir}/tests
 
     # install ${qt_includes_dir}/Qt if not already and it exists in
     # the build, for support of legacy projects

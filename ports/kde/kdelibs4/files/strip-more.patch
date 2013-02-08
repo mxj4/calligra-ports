@@ -1,0 +1,40 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5df26e5..4192f2e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -296,7 +296,7 @@ endif (QT_QT3SUPPORT_FOUND)
+ add_subdirectory( kfile )
+ add_subdirectory( kconf_update )
+ if(NOT WINCE)
+-add_subdirectory( kdoctools  )
++#add_subdirectory( kdoctools  )
+ endif(NOT WINCE)
+ add_subdirectory( kioslave   )
+ add_subdirectory( knewstuff  )
+@@ -312,7 +312,7 @@ add_subdirectory( khtml  )
+ endif(NOT WINCE)
+ add_subdirectory( interfaces  )
+ #if ( NOT CMAKE_CROSSCOMPILING AND QT_QTDESIGNER_FOUND )
+-add_subdirectory( kdewidgets  )
++#add_subdirectory( kdewidgets  )
+ #endif ( NOT CMAKE_CROSSCOMPILING AND QT_QTDESIGNER_FOUND )
+ add_subdirectory( knotify )
+ if(NOT WINCE)
+@@ -322,14 +322,14 @@ add_subdirectory( dnssd )
+ add_subdirectory( kross )
+ add_subdirectory( security )
+ if(NOT WINCE)
+-add_subdirectory( plasma )
++#add_subdirectory( plasma )
+ endif(NOT WINCE)
+ add_subdirectory( kunitconversion )
+ add_subdirectory( kdewebkit )
+ add_subdirectory( includes )
+ 
+-add_subdirectory( experimental )
+-macro_optional_add_subdirectory( doc  )
++#add_subdirectory( experimental )
++#macro_optional_add_subdirectory( doc  )
+ 
+ ################# write dependency file which will be installed #################
+ 
